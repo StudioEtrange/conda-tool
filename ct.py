@@ -19,6 +19,14 @@ def remove_build_number_version(env_file_list_string):
     """
     return ['='.join(re.split(r'[=](?=[^=])', l)[0:2]) for l in env_file_list_string]
 
+def remove_non_portable_package(env_file_list_string):
+    """
+    remove some non portable or generic default package
+    """
+    regex = re.compile(r'.*vs.*_runtime.*|.*readline.*|.*openssl.*')
+    return [x for x in env_file_list_string if not regex.match(x)]
+
+
 
 
 if __name__== '__main__':
@@ -40,10 +48,6 @@ if __name__== '__main__':
         if args.action == 'clean-file':
             env_content = load_env_file(args.file_path)
             env_content = remove_build_number_version(env_content)
+            env_content = remove_non_portable_package(env_content)
             save_env_file(args.file_path, env_content)
         pass
-
-
-
-
-
